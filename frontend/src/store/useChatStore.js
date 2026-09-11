@@ -83,6 +83,7 @@ export const useChatStore = create(
       subscribeToMessages: (userId) => {
         if (!userId) return;
 
+        //not inside react coponment so we use getStore otherwise socket= useAuthStore((state) => state.socket);
         const socket = useAuthStore.getState().socket;
         if (!socket) return;
 

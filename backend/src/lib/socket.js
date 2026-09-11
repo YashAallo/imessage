@@ -9,9 +9,7 @@ const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const io = new Server(server, { cors: { origin: [allowedOrigin] } });
 
-function getReceiverSocketId(userId) {
-  return userSocketMap[userId];
-}
+
 
 // online users map = { userId: socketId }
 const userSocketMap = {};
@@ -26,9 +24,15 @@ io.on("connection", (socket) => {
 
   // socket.on is used to listen for events
   socket.on("disconnect", () => {
-    if (userId) delete userSocketMap[userId];
+    if (userId && userSocketMap[userId] === socket.id) {
+      delete userSocketMap[userId];
+    }
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
+
+function getReceiverSocketId(userId) {
+  return userSocketMap[userId];
+}
 
 export { app, server, io, getReceiverSocketId };
